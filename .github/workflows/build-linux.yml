@@ -31,11 +31,18 @@ jobs:
     steps:
     - name: Lookup cache for deps
       id: emu-deps-cache-step
+      if: |
+        !startsWith(github.ref, 'refs/tags/') &&
+        ${{ github.event_name != 'pull_request' }}
       uses: actions/cache@v3
       with:
         key: ${{ env.DEPS_CACHE_KEY }}
         path: ${{ env.DEPS_CACHE_DIR }}
         lookup-only: true
+
+    - name: dbgg
+      shell: bash
+      run: echo event name = "${{ github.event_name }}"
 
     # we need the repo to build the deps since it has the build scripts
     - name: Checkout branch
